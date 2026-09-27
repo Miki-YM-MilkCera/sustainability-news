@@ -1,0 +1,76 @@
+name: Weekly ESG News Report
+
+on:
+  schedule:
+    # 毎週月曜 JST 9:00 (UTC 0:00)
+    - cron: '0 0 * * 1'
+  # 手動実行（テスト・緊急時）
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # gh-pages ブランチへの push に必要
+
+    steps:
+      # ── 1. チェックアウト ──
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Python セットアップ（pip キャッシュ有効）──
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 3. RSSフェッチ・フィルタ・分類 ──
+      - name: Fetch news articles
+        id: fetch
+        run: python scripts/fetch_news.py
+
+      # ── 4. Gemini API で要約（記事がある場合のみ） ──
+      - name: Summarize articles with Gemini
+        if: steps.fetch.outputs.has_articles == 'true'
+        run: python scripts/summarize.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      # ── 5. HTMLレポート生成 ──
+      - name: Generate HTML report
+        if: steps.fetch.outputs.has_articles == 'true'
+        run: python scripts/generate_report.py
+
+      # ── 6. GitHub Pages にデプロイ ──
+      - name: Deploy to GitHub Pages
+        if: steps.fetch.outputs.has_articles == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          # 毎回クリーンデプロイ（前回レポートを上書き）
+          force_orphan: true
+
+      # ── 7. Pages 反映待ち（CDN への伝播を考慮） ──
+      - name: Wait for Pages propagation
+        if: steps.fetch.outputs.has_articles == 'true'
+        run: sleep 60
+
+      # ── 8. Slack 通知 ──
+      - name: Notify Slack
+        if: steps.fetch.outputs.has_articles == 'true'
+        run: python scripts/notify_slack.py
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # PAGES_URL: リポジトリ情報から動的に組み立て（ハードコード不要）
+          PAGES_URL: >-
+            https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+
+      # ── 記事0件の場合のサマリー出力 ──
+      - name: Skip notice
+        if: steps.fetch.outputs.has_articles != 'true'
+        run: echo "今週の対象記事が0件でした。レポート生成・通知をスキップしました。"

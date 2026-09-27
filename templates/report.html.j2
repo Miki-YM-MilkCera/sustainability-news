@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食品メーカー サステナビリティ開示動向レポート</title>
+  <style>
+    /* ── ベースリセット ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+                   "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+      background: #F9FAFB;
+      color: #111827;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── レイアウト ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* ── ヘッダー ── */
+    .header { margin-bottom: 24px; }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+    .header .subtitle {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    /* ── 統計カード ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+    }
+    .stat-card.warning .stat-value { color: #B45309; }
+    .stat-label {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    /* ── 区切り線 ── */
+    hr {
+      border: none;
+      border-top: 1px solid #E5E7EB;
+      margin: 24px 0;
+    }
+
+    /* ── カテゴリピル ── */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s, transform 0.1s;
+      background: none;
+    }
+    .pill:hover { opacity: 0.8; }
+    .pill.active { font-weight: 600; }
+
+    /* カテゴリ色（TSX CATEGORY_CONFIG の tone に対応） */
+    .pill-all        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-all.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    .pill-issb        { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .pill-issb.active { background: #1D4ED8; color: #fff;    border-color: #1D4ED8; }
+
+    .pill-tcfd        { background: #FFFBEB; color: #B45309; border-color: #FDE68A; }
+    .pill-tcfd.active { background: #B45309; color: #fff;    border-color: #B45309; }
+
+    .pill-regulation        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-regulation.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    .pill-tnfd        { background: #ECFDF5; color: #065F46; border-color: #A7F3D0; }
+    .pill-tnfd.active { background: #065F46; color: #fff;    border-color: #065F46; }
+
+    .pill-supply        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-supply.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    /* ── フィーチャード記事（TSX FeaturedArticle） ── */
+    .featured {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .featured-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .featured h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .featured h2 a:hover { text-decoration: underline; }
+    .featured .summary {
+      font-size: 0.875rem;
+      color: #4B5563;
+      margin-bottom: 10px;
+      line-height: 1.65;
+    }
+    .featured .meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+    .featured .meta .source { color: #6B7280; font-weight: 500; }
+    .featured .meta .sep    { color: #D1D5DB; }
+    .featured .meta .time   { color: #9CA3AF; }
+
+    /* ── 注目バッジ ── */
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #FFFBEB;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .badge-important {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    /* ── セクションラベル ── */
+    .section-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #6B7280;
+      margin-bottom: 16px;
+    }
+
+    /* ── 記事グリッド（TSX Grid columns=3） ── */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .articles-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid    { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .stats-grid    { grid-template-columns: 1fr; }
+    }
+
+    /* ── 記事カード（TSX ArticleCard） ── */
+    .article-card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: box-shadow 0.15s;
+    }
+    .article-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card-badges { display: flex; align-items: center; gap: 6px; }
+    .article-card h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #111827;
+      flex: 1;
+    }
+    .article-card h3 a:hover { text-decoration: underline; }
+    .article-card .summary {
+      font-size: 0.8125rem;
+      color: #4B5563;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      margin-top: 4px;
+    }
+    .card-meta .source { color: #6B7280; font-weight: 500; }
+    .card-meta .sep    { color: #D1D5DB; }
+    .card-meta .time   { color: #9CA3AF; }
+
+    /* ── 「記事なし」コールアウト ── */
+    .callout {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: #6B7280;
+    }
+    .callout strong { display: block; margin-bottom: 4px; color: #374151; }
+
+    /* ── フッター ── */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: #9CA3AF;
+    }
+
+    /* ── カテゴリ非表示制御 ── */
+    .article-card[data-hidden="true"],
+    .featured[data-hidden="true"] { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  {# ── ヘッダー ── #}
+  <header class="header">
+    <h1>食品メーカー サステナビリティ開示動向レポート</h1>
+    <p class="subtitle">ISSB / TCFD / TNFD 対応状況モニタリング　·　最終更新: {{ generated_at }}</p>
+  </header>
+
+  {# ── 統計 ── #}
+  {% set source_list = articles | map(attribute='source') | list | unique | list %}
+  {% set important_count = articles | selectattr('important') | list | length %}
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">{{ articles | length }}</div>
+      <div class="stat-label">収集記事数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ source_list | length }}</div>
+      <div class="stat-label">メディアソース</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-value">{{ important_count }}</div>
+      <div class="stat-label">注目ニュース</div>
+    </div>
+  </div>
+
+  <hr>
+
+  {# ── カテゴリフィルター ── #}
+  {% set categories = ["ISSB対応", "TCFD開示", "規制・義務化", "TNFD/生物多様性", "サプライチェーン"] %}
+  {% set cat_class = {
+    "ISSB対応":        "issb",
+    "TCFD開示":        "tcfd",
+    "規制・義務化":    "regulation",
+    "TNFD/生物多様性": "tnfd",
+    "サプライチェーン": "supply"
+  } %}
+  {% set cat_icon = {
+    "ISSB対応":        "📋",
+    "TCFD開示":        "🌡️",
+    "規制・義務化":    "⚖️",
+    "TNFD/生物多様性": "🌿",
+    "サプライチェーン": "🔗"
+  } %}
+
+  <div class="pills" id="pills">
+    <button class="pill pill-all active" onclick="filterCategory('all', this)">
+      🗂️ すべて ({{ articles | length }})
+    </button>
+    {% for cat in categories %}
+    {% set count = articles | selectattr('category', 'equalto', cat) | list | length %}
+    {% if count > 0 %}
+    <button class="pill pill-{{ cat_class[cat] }}" onclick="filterCategory('{{ cat }}', this)">
+      {{ cat_icon[cat] }} {{ cat }} ({{ count }})
+    </button>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  {# ── トップストーリー（important=True の記事） ── #}
+  {% set featured = articles | selectattr('important') | first %}
+  {% if featured %}
+  <div class="featured" data-category="{{ featured.category }}" id="featured-section">
+    <div class="featured-badges">
+      <span class="pill pill-{{ cat_class[featured.category] }}">{{ cat_icon[featured.category] }} {{ featured.category }}</span>
+      <span class="badge-top">⭐ トップストーリー</span>
+    </div>
+    <h2><a href="{{ featured.url }}" target="_blank" rel="noopener">{{ featured.headline }}</a></h2>
+    <p class="summary">{{ featured.summary }}</p>
+    <div class="meta">
+      <span class="source">{{ featured.source }}</span>
+      <span class="sep">·</span>
+      <span class="time">{{ featured.time }}</span>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── その他の記事グリッド ── #}
+  <p class="section-label" id="grid-label">その他のニュース</p>
+
+  {% set grid_articles = articles | rejectattr('important') | list %}
+  {% if grid_articles %}
+  <div class="articles-grid" id="articles-grid">
+    {% for article in grid_articles %}
+    <div class="article-card" data-category="{{ article.category }}">
+      <div class="card-badges">
+        <span class="pill pill-{{ cat_class[article.category] }}">{{ cat_icon[article.category] }} {{ article.category }}</span>
+        {% if article.important %}<span class="badge-important">注目</span>{% endif %}
+      </div>
+      <h3><a href="{{ article.url }}" target="_blank" rel="noopener">{{ article.headline }}</a></h3>
+      <p class="summary">{{ article.summary }}</p>
+      <div class="card-meta">
+        <span class="source">{{ article.source }}</span>
+        <span class="sep">·</span>
+        <span class="time">{{ article.time }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="callout">
+    <strong>記事なし</strong>今週は収集された記事がありません。
+  </div>
+  {% endif %}
+
+  <hr>
+
+  {# ── フッター ── #}
+  <footer>
+    <span>データソース: {{ source_list | join(', ') }}</span>
+    <span>最終更新: {{ generated_at }}</span>
+  </footer>
+
+</div>
+
+<script>
+  const CATEGORY_MAP = {
+    "ISSB対応":        "issb",
+    "TCFD開示":        "tcfd",
+    "規制・義務化":    "regulation",
+    "TNFD/生物多様性": "tnfd",
+    "サプライチェーン": "supply"
+  };
+
+  function filterCategory(cat, btn) {
+    // ピルのアクティブ状態を更新
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const featured = document.getElementById('featured-section');
+    const gridLabel = document.getElementById('grid-label');
+    const cards = document.querySelectorAll('.article-card');
+
+    if (cat === 'all') {
+      if (featured) featured.removeAttribute('data-hidden');
+      gridLabel.textContent = 'その他のニュース';
+      cards.forEach(c => c.removeAttribute('data-hidden'));
+    } else {
+      // フィーチャード記事：カテゴリが一致しない場合は非表示
+      if (featured) {
+        const featuredCat = featured.getAttribute('data-category');
+        featured.setAttribute('data-hidden', featuredCat === cat ? 'false' : 'true');
+      }
+      gridLabel.textContent = cat;
+      cards.forEach(c => {
+        const cardCat = c.getAttribute('data-category');
+        c.setAttribute('data-hidden', cardCat === cat ? 'false' : 'true');
+      });
+    }
+  }
+</script>
+</body>
+</html>
