@@ -2,7 +2,7 @@
 summarize.py — Gemini API による記事要約
 
 output/articles.json を読み込み、各記事の summary フィールドを
-Gemini 1.5 Flash で日本語200字以内の要約に置き換えて上書き保存する。
+Gemini 2.0 Flash で日本語200字以内の要約に置き換えて上書き保存する。
 
 費用目安: 1記事あたり約 $0.0001（週12件で月 $0.005 ≒ 0.7円）
 """
@@ -33,7 +33,7 @@ def summarize_articles(articles: list[dict]) -> list[dict]:
         return articles
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.0-flash")
 
     for i, article in enumerate(articles):
         raw_summary = article.get("summary", "").strip()
