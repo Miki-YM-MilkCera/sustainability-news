@@ -45,19 +45,28 @@ def summarize_articles(articles: list[dict]) -> list[dict]:
             summary=raw_summary[:1000],
         )
 
-        try:
-            response = model.generate_content(prompt)
-            article["summary"] = response.text.strip()
-            print(f"  [{i + 1}/{len(articles)}] 要約完了: {article['headline'][:40]}…")
-        except Exception as e:
-            print(
-                f"::warning::記事 {article['id']} の要約に失敗しました: {e}",
-                file=sys.stderr,
-            )
+        # リトライ付き要約（429対策：最大3回、指数バックオフ）
+        for attempt in range(3):
+            try:
+                response = model.generate_content(prompt)
+                article["summary"] = response.text.strip()
+                print(f"  [{i + 1}/{len(articles)}] 要約完了: {article['headline'][:40]}…")
+                break
+            except Exception as e:
+                if "429" in str(e) and attempt < 2:
+                    wait = 30 * (attempt + 1)  # 30秒 → 60秒
+                    print(f"  レート制限のため {wait} 秒待機して再試行します…", file=sys.stderr)
+                    time.sleep(wait)
+                else:
+                    print(
+                        f"::warning::記事 {article['id']} の要約に失敗しました: {e}",
+                        file=sys.stderr,
+                    )
+                    break
 
-        # API レート制限対策（1秒待機）
+        # API レート制限対策（5秒待機 → 毎分12リクエスト以内に収める）
         if i < len(articles) - 1:
-            time.sleep(1)
+            time.sleep(5)
 
     return articles
 
