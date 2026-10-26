@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食品メーカー サステナビリティ開示動向レポート</title>
+  <style>
+    /* ── ベースリセット ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+                   "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+      background: #F9FAFB;
+      color: #111827;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── レイアウト ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* ── ヘッダー ── */
+    .header { margin-bottom: 24px; }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+    .header .subtitle {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #9CA3AF;
+    }
+
+    /* ── 統計カード ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+    }
+    .stat-card.warning .stat-value { color: #B45309; }
+    .stat-label {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    /* ── 区切り線 ── */
+    hr {
+      border: none;
+      border-top: 1px solid #E5E7EB;
+      margin: 24px 0;
+    }
+
+    /* ── カテゴリピル ── */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s, transform 0.1s;
+      background: none;
+    }
+    .pill:hover { opacity: 0.8; }
+    .pill.active { font-weight: 600; }
+
+    /* カテゴリ色（TSX CATEGORY_CONFIG の tone に対応） */
+    .pill-all        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-all.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    .pill-issb        { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+    .pill-issb.active { background: #1D4ED8; color: #fff;    border-color: #1D4ED8; }
+
+    .pill-tcfd        { background: #FFFBEB; color: #B45309; border-color: #FDE68A; }
+    .pill-tcfd.active { background: #B45309; color: #fff;    border-color: #B45309; }
+
+    .pill-regulation        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-regulation.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    .pill-tnfd        { background: #ECFDF5; color: #065F46; border-color: #A7F3D0; }
+    .pill-tnfd.active { background: #065F46; color: #fff;    border-color: #065F46; }
+
+    .pill-supply        { background: #F3F4F6; color: #374151; border-color: #D1D5DB; }
+    .pill-supply.active { background: #374151; color: #fff;    border-color: #374151; }
+
+    /* ── フィーチャード記事（TSX FeaturedArticle） ── */
+    .featured {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .featured-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .featured h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .featured h2 a:hover { text-decoration: underline; }
+    .featured .summary {
+      font-size: 0.875rem;
+      color: #4B5563;
+      margin-bottom: 10px;
+      line-height: 1.65;
+    }
+    .featured .meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+    .featured .meta .source { color: #6B7280; font-weight: 500; }
+    .featured .meta .sep    { color: #D1D5DB; }
+    .featured .meta .time   { color: #9CA3AF; }
+
+    /* ── 注目バッジ ── */
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #FFFBEB;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .badge-important {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    /* ── セクションラベル ── */
+    .section-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #6B7280;
+      margin-bottom: 16px;
+    }
+
+    /* ── 記事グリッド（TSX Grid columns=3） ── */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) {
+      .articles-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid    { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .articles-grid { grid-template-columns: 1fr; }
+      .stats-grid    { grid-template-columns: 1fr; }
+    }
+
+    /* ── 記事カード（TSX ArticleCard） ── */
+    .article-card {
+      background: #fff;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: box-shadow 0.15s;
+    }
+    .article-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card-badges { display: flex; align-items: center; gap: 6px; }
+    .article-card h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #111827;
+      flex: 1;
+    }
+    .article-card h3 a:hover { text-decoration: underline; }
+    .article-card .summary {
+      font-size: 0.8125rem;
+      color: #4B5563;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      margin-top: 4px;
+    }
+    .card-meta .source { color: #6B7280; font-weight: 500; }
+    .card-meta .sep    { color: #D1D5DB; }
+    .card-meta .time   { color: #9CA3AF; }
+
+    /* ── 「記事なし」コールアウト ── */
+    .callout {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: #6B7280;
+    }
+    .callout strong { display: block; margin-bottom: 4px; color: #374151; }
+
+    /* ── フッター ── */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: #9CA3AF;
+    }
+
+    /* ── カテゴリ非表示制御 ── */
+    .article-card[data-hidden="true"],
+    .featured[data-hidden="true"] { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header class="header">
+    <h1>食品メーカー サステナビリティ開示動向レポート</h1>
+    <p class="subtitle">ISSB / TCFD / TNFD 対応状況モニタリング　·　最終更新: 2026年10月26日 14:14 JST</p>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">78</div>
+      <div class="stat-label">収集記事数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">4</div>
+      <div class="stat-label">メディアソース</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-value">1</div>
+      <div class="stat-label">注目ニュース</div>
+    </div>
+  </div>
+
+  <hr>
+
+
+  <div class="pills" id="pills">
+    <button class="pill pill-all active" onclick="filterCategory('all', this)">
+      🗂️ すべて (78)
+    </button>
+    <button class="pill pill-issb" onclick="filterCategory('ISSB対応', this)">
+      📋 ISSB対応 (11)
+    </button>
+    <button class="pill pill-tcfd" onclick="filterCategory('TCFD開示', this)">
+      🌡️ TCFD開示 (24)
+    </button>
+    <button class="pill pill-regulation" onclick="filterCategory('規制・義務化', this)">
+      ⚖️ 規制・義務化 (9)
+    </button>
+    <button class="pill pill-tnfd" onclick="filterCategory('TNFD/生物多様性', this)">
+      🌿 TNFD/生物多様性 (30)
+    </button>
+    <button class="pill pill-supply" onclick="filterCategory('サプライチェーン', this)">
+      🔗 サプライチェーン (4)
+    </button>
+  </div>
+
+  <div class="featured" data-category="TCFD開示" id="featured-section">
+    <div class="featured-badges">
+      <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      <span class="badge-top">⭐ トップストーリー</span>
+    </div>
+    <h2><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5xZW9VRFlIWmFuZzFJYUZlNUNvSWFYZmtielJlRlVwQnV4SjUzUkVvV2pLWkl4Qnl3cTY5ZC1CZk5ZazBmMWM2MWFrbG54NmNCX0R5WDJ0YmY?oc=5" target="_blank" rel="noopener">気候変動・自然資本の取り組み強化に向けて「気候・自然関連情報報告書-TCFD・TNFD 統合開示-」を公開～コーヒー豆・米の LEAP アプローチを実施～ - サステナビリティレポート／セブン</a></h2>
+    <p class="summary">セブンは、気候変動と自然資本への取り組み強化に向け、「気候・自然関連情報報告書」を公開し、TCFDとTNFDの枠組みに基づく統合開示を実施した。同報告書では、重要原材料であるコーヒー豆や米を対象に、自然関連リスクや機会を特定・評価する「LEAPアプローチ」を適用している。環境負荷の低減と持続可能な原材料調達に向けた具体的な対応状況を開示することで、投資家等への透明性向上を図っている。</p>
+    <div class="meta">
+      <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+      <span class="sep">·</span>
+      <span class="time">2025年10月09日 20:07 JST</span>
+    </div>
+  </div>
+
+  <p class="section-label" id="grid-label">その他のニュース</p>
+
+  <div class="articles-grid" id="articles-grid">
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE4tN3FITHFQTkxRYlkwVDBQREtmWDJYc01wdG85bVhvX0N6akR1RTBCTXRzRGFOSHllZUQ5QnlSODVPcmZtOVg3YlVpTGwzZW9jZlFvUENnVV93b21NcGpidEdtZkVtYnhSXzRUdA?oc=5" target="_blank" rel="noopener">サステナ開示、義務化が問う意義 「企業の持続可能性」測る物差しに - 日本経済新聞</a></h3>
+      <p class="summary">サステナ開示、義務化が問う意義 「企業の持続可能性」測る物差しに&nbsp;&nbsp;日本経済新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2026年03月30日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9MQjZkRFVJVTFDekpOMGJGbkk1cGljcDdXZ3BJRVZxUWJLeDd3cTdSNlNuNFlQNnBFT09VV1VPX2xqWk9tQW9rOEJzemQ4dlVyS1RhRXFJbXNaWF9kQ1Y0?oc=5" target="_blank" rel="noopener">法定開示義務化でのマテリアリティ分析はどう行う？ 2027年から大きく変わるサステナビリティ法定開示の実務対応② - 東洋経済オンライン</a></h3>
+      <p class="summary">2027年からサステナビリティ情報の法定開示が大きく変更され義務化される見通しの中、企業には適切なマテリアリティ（重要課題）分析と実務対応が求められます。投資家からの情報開示要請や新基準に対応するため、企業担当者は開示対象となる重要項目の特定プロセスの再点検など、早期の準備と体制整備が不可欠となります。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2026年09月29日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTE9QYV9kOEQ3alVsNHg1SFF0aU92c0Y0bHdMYWpqWWVYZmpxSk9hN3hTZnVfdFpfdHNtYTVkOFdRNjNHbmQ0WTBhRnlwQTk?oc=5" target="_blank" rel="noopener">27年3月期の義務化へ待ったなし。SSBJ基準確定でプライム企業に迫る「Scope3」開示義務 - ダイヤモンド・オンライン</a></h3>
+      <p class="summary">SSBJ基準の確定に伴い、東証プライム企業を対象に2027年3月期からのサステナビリティ情報開示の義務化が迫っている。特に、自社だけでなくサプライチェーン全体の温室効果ガス排出量を対象とする「Scope3」の開示が義務付けられる見通しであり、企業には早期のデータ収集・算定体制の構築が求められる。投資家にとっては、企業全体の気候変動リスクをより正確に把握・評価するための重要な判断材料となる。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2026年02月10日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTFBXbUx1cWV1R3gxLXVhcEttdHBpYmtOWXpzUEN0WGs2QUdIWGpwc0N6TXZWRG9ramk3TDFoam1tSEFHZ0NCOUNFMXVuZGY5WHVVRTJCSWJoME1FWWFxWXM5c3RKc3A4VVVKM1Nadw?oc=5" target="_blank" rel="noopener">金融庁、有報提出期限は3カ月で据え置きへ サステナ開示義務化でも - 日本経済新聞</a></h3>
+      <p class="summary">金融庁はサステナビリティ情報の開示義務化に伴い議論されていた有価証券報告書の提出期限について、現行の「期末後3カ月以内」を据え置く方針です。企業側の負担増による期限延長の要望に対し、投資家への迅速な情報開示を重視した判断となります。対象企業は現行の提出期限内で財務情報に加え、気候変動等の非財務情報の収集・開示プロセスを効率的に整備し、早期の開示体制構築を進めることが求められます。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年10月30日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5SMmNjSmFYcldiUHRaX0lSTGJVNmR0bUdzcmQ2ZEdpMVp2Y3IwVEFqZXpmYlZZZjJGUmp4V0lmUWJxTmhYRC1LOWM1eVpvMTZuYlBUM19QMlNndXh2Z0V2UlZIbE1TZnBpeVBtYw?oc=5" target="_blank" rel="noopener">サステナ開示、大企業で義務付け先行 投資マネー呼び込み狙う - 日本経済新聞</a></h3>
+      <p class="summary">大企業を対象にサステナビリティ情報の開示義務化が先行して進められています。国際基準に沿ったESG情報の透明性を高めることで、国内外の投資マネーを呼び込む狙いがあります。対象となる大企業には迅速な開示体制の整備が求められる一方、投資家にとっては非財務情報の把握により中長期的な企業価値の評価が容易になります。今後はサプライチェーン全体や中堅企業への波及も見据えた対応が重要となります。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月17日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE1hSWlfNllxMDA4Z3JvSS1qbmVJclE3RXVYX19YSWpSLTZLbGxTTm53SHFtdGRQMHNsYkhlU0NyUkNiZmZveEx0VkZGcFZZQzdvMXpnOGJOc2JEQkdLaThGSEFNMDhla0ZfT3l3Ug?oc=5" target="_blank" rel="noopener">サステナ開示義務化 来期から プライム企業 中長期の価値測る - 日本経済新聞</a></h3>
+      <p class="summary">東京証券取引所のプライム市場上場企業を対象に、サステナビリティ情報の開示が来期から義務化されます。これにより企業の非財務情報が可視化され、投資家は中長期的な企業価値をより適切に評価・判断できるようになります。対象企業には情報開示体制の早期整備が求められ、中長期的な価値向上を見据えた経営戦略の策定とステークホルダーへの明確な発信がより重要となります。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年12月21日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE9IT0hlU1BncFN0bkQxRUpPV2c2VzctYnBfUnQ3ejRKOUMzU0tJVURyT1ZqVXZ0NkJvUkU4ZVBnZ2dmUTYyOUZvSW9nUU9rc0hZaHMtbFBHWnNPQ2loejBIM2I0eS1XNnhpQ1ZuaA?oc=5" target="_blank" rel="noopener">サステナ開示義務化、金融審が大筋で合意 「保証」は28年3月期から - 日本経済新聞</a></h3>
+      <p class="summary">金融庁の金融審議会は、企業のサステナビリティ情報開示の義務化に大筋で合意しました。開示内容の信頼性を担保する第三者保証は、2028年3月期から導入される方針です。企業には有価証券報告書等における非財務情報の開示基準への適合や監査体制の整備が求められます。投資家にとっても投資判断に直結するESG情報の信頼性が向上する見通しであり、企業側は保証開始に向けた計画的な準備が必要となります。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年12月22日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1xdUliRkNmOU5nUFRIWjNhN3F4UHA0U1c3LWdfUlJmUlcxSWFzd2J0VC1XMC1aZ281OGpyUXR4R2tSM1MyN2E2emIzNFBBZnJLUE5BbkdkSFQzYVd5MFVibUlraEN2NDQ?oc=5" target="_blank" rel="noopener">【台湾】金融当局、ISSBのS1とS2に完全準拠。2026年から段階的に上場企業に開示義務化 - Sustainable Japan</a></h3>
+      <p class="summary">台湾の金融当局は、国際サステナビリティ基準審議会（ISSB）が策定した「IFRS S1（一般要求事項）」と「S2（気候関連開示）」に完全準拠する方針を決定しました。これにより、2026年から台湾の上場企業を対象に段階的な情報開示が義務化されます。現地企業は早期の体制整備が求められる一方、投資家にとっては国際基準に基づいた比較可能性の高いESGデータの入手が期待されます。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2023年08月20日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1NTjhIRjA4MWtXWWJiLXBjUGo4SWQ4c09TcUJELVJGTDVkN3E4aGc4d3hJbDRraU5pYmlPakRYX1hnelZIT28zSktlZENLdW1jRTdkRm1LYXR4N1FjMkhMblc3WGJ4MVlaa1E?oc=5" target="_blank" rel="noopener">TCFD・TNFDのフレームワークに基づく統合的な情報開示を実施 | カルビー株式会社のプレスリリース - PR TIMES</a></h3>
+      <p class="summary">カルビーは、気候関連のTCFDと自然資本関連のTNFDの各フレームワークに基づき、統合的な情報開示を実施しました。気候変動および生物多様性などの自然資本に関するリスクと機会を統合的に把握・評価し、透明性の高い開示を行うことで、投資家らステークホルダーに向けた非財務情報の充実と持続的な企業価値向上を目指します。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年10月09日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxNaVFYX0pPbFdCSmhfdEtDbGZybDNXTlY3WjZHN3NlQ25acldZVklKWmZkREtMbVV4Y0RjdzE1amdIRGRqdHFEQkFsYlZnbERlYnFfaFkta3NETEJ2cWZfRVU0Mjc0Mmg3WU9DeTlRVEdnU2hxMVFQYXVrNWdjdTNJZHRMa29ubnBFRWc?oc=5" target="_blank" rel="noopener">生物多様性 - 味の素株式会社</a></h3>
+      <p class="summary">生物多様性&nbsp;&nbsp;味の素株式会社</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年03月05日 13:18 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFBzbHN4dUR5TVpteXljVVk5YkxzNVhKNXppVFNEWHMtTDBjRlZ1aHNhUktPVEMxcE93d1JEUU9yYUQySGdFYXcwVXFwUUI0OWN0cDVxZHlKRkZtVTgxMzFxck9waGNoLXo0OUE?oc=5" target="_blank" rel="noopener">TNFD情報開示フレームワークに基づく自然関連財務情報を開示 - 森永乳業株式会社</a></h3>
+      <p class="summary">TNFD情報開示フレームワークに基づく自然関連財務情報を開示&nbsp;&nbsp;森永乳業株式会社</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2024年08月30日 10:36 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1lQU41bGREaW95WXVOeGZYRVNzX2NEdjdNQkdhNlFGMzZGd0lJUkFQRmVERTE5aGRQNFRXS3dHT0tERXBWMnRldXcxa01DU21tbkNydGNxSG9ZUUhLR3N2OHE4UUZlNzdBb3c?oc=5" target="_blank" rel="noopener">TNFD（※）情報開示フレームワークに基づく自然関連財務情報を開示 | 森永乳業株式会社のプレスリリース - PR TIMES</a></h3>
+      <p class="summary">TNFD（※）情報開示フレームワークに基づく自然関連財務情報を開示 | 森永乳業株式会社のプレスリリース&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2024年08月30日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://sustainablejapan.jp/2026/10/26/cbd-cop-17/131732" target="_blank" rel="noopener">【国際】生物多様性条約COP 17、第1週で14本の決定採択。資金拠出や人権で対立続く</a></h3>
+      <p class="summary">生物多様性条約第17回エレバン締約国会議（CBD COP17）は10月19日に開幕し、最初の1週間で14本の決定を採択した。10月30日の閉幕に向けた後半の焦点は資金。拠出国の範囲を新興国や湾岸諸国[&#8230;]</p>
+      <div class="card-meta">
+        <span class="source">サステナブルジャパン</span>
+        <span class="sep">·</span>
+        <span class="time">2026年10月26日 09:25 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://sustainablejapan.jp/2026/10/23/issb-nature-related-disclosures/131679" target="_blank" rel="noopener">【国際】ISSB、自然関連財務情報開示実務記述書案発表。シナリオ分析やリスク資産比率の開示要求</a></h3>
+      <p class="summary">IFRS財団の国際サステナビリティ基準審議会（ISSB）は10月22日、自然関連財務情報開示に関する実務記述書の公開草案を発表し、パブリックコメントの募集を開始した。自然関連財務情報開示タスクフォー[&#8230;]</p>
+      <div class="card-meta">
+        <span class="source">サステナブルジャパン</span>
+        <span class="sep">·</span>
+        <span class="time">2026年10月23日 09:54 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE9ZZ2dWRU1RU2hrcTdhVkFjMnA3bVN2SER6b1V2NmtxbW1UbEIyUkJUYWMtUkFOaXVfOGdfbHdzTzlyT3RJblZNUDBtR1FoZ0RuVE5fbUt2UQ?oc=5" target="_blank" rel="noopener">ISSB、SASBスタンダード改訂案を公表—農業・食品・電力業界の開示項目が拡充 - ESG Journal</a></h3>
+      <p class="summary">ISSB、SASBスタンダード改訂案を公表—農業・食品・電力業界の開示項目が拡充&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2026年03月30日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMib0FVX3lxTE1nY19wci1pY3h1ZHVJZE44N2dtMGF2c1A5UDZUUTlzanl2ZkVKeVVtTmplMEtucF83ZXQ1UW1sUU1wZmt5a19LNHRzWUdwZjRmWHAwT1J2ZlVacVFMRGFFNzdMTzZqTkNVN25wYzc2QdIBdEFVX3lxTE5XbVB6YVR5WXFfUUFSWFVxRnZLR19lNTU1Q1laVU11RGFFMi15OU1VODNSVjZBZ2VFelpVRm9JMDVGUFlnVDIwc2RiRUZ6VGhIeWMzSzRoQk1KWllub1NYTC1BX1NteWxxVzg0MXBWdFhtSTZG?oc=5" target="_blank" rel="noopener">【オーストラリア】財務省、豪版ISSB開示基準の修正案提示。合理的保証要求を緩和へ | Sustainable Japan | 世界のサステナビリティ・ESG投資・SDGs - Sustainable Japan</a></h3>
+      <p class="summary">【オーストラリア】財務省、豪版ISSB開示基準の修正案提示。合理的保証要求を緩和へ | Sustainable Japan | 世界のサステナビリティ・ESG投資・SDGs&nbsp;&nbsp;Sustainable Japan</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2026年08月28日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFBaam9yTTA4aXl5UnNpdzhmdTdDWlFraGx0SEIxaHUyNVk4cDQ1bkt5eUsxSkxYajhEbm45RTlURDA5NHpNOGp3clNLNkI0TEpNVEdJUWpPQVN4RUk?oc=5" target="_blank" rel="noopener">TCFD・TNFD 提言への対応 - サステナビリティレポート／セブン</a></h3>
+      <p class="summary">TCFD・TNFD 提言への対応&nbsp;&nbsp;サステナビリティレポート／セブン</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年12月12日 15:25 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE5mXzdEN0h6TVFpYUFaYTA3Z1ZnTDNZUkNDMmpUVFpLVUE4UDViVHpQNE9xNDBkXzdrVGstdEl5UHRJOHd6NWxiNkJUZlV0NnFKTmFsS2JrMDYzNjZBbWwzMlpDNG9GeUlkZXc?oc=5" target="_blank" rel="noopener">SSBJ基準に準拠したサステナビリティ関連財務開示を日本企業で初めて2025年度から日本語と英語同時に開始 - PR TIMES</a></h3>
+      <p class="summary">SSBJ基準に準拠したサステナビリティ関連財務開示を日本企業で初めて2025年度から日本語と英語同時に開始&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2026年03月27日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTE5fTW9sUEhLcnQ5bmtRVmxYX3pUbXBzOXcyR0twWnZtUDQ4SmljRE5XNG12Mk5SRHl0YVBRd3RkR1V5VVlpVXEzWnZjU3gySkF2U2wzSm94LWc3OEFzSGc?oc=5" target="_blank" rel="noopener">TNFD(※1)提言・TCFD(※2)提言に基づく環境経営に関する統合開示を開始 - サントリーホールディングス</a></h3>
+      <p class="summary">TNFD(※1)提言・TCFD(※2)提言に基づく環境経営に関する統合開示を開始&nbsp;&nbsp;サントリーホールディングス</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月31日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTFBPcG43aEtWNFdoODg1TjZqOGtIbklmNWYzQmg4eHppbXhvMVZhelVjSFpLZWtycWdqTlVVTF81d0RUOVdMUlE4RVlLWkoxeHV0RUJQbklObVJVQQ?oc=5" target="_blank" rel="noopener">【統合思考経営20】TCFD開示の国際比較から見えてきた日本企業の経営課題と解決方策（前編）～『TCFD開示の業種別・日米欧企業比較分析』より～ - Sustainable Brands Japan</a></h3>
+      <p class="summary">【統合思考経営20】TCFD開示の国際比較から見えてきた日本企業の経営課題と解決方策（前編）～『TCFD開示の業種別・日米欧企業比較分析』より～&nbsp;&nbsp;Sustainable Brands Japan</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年04月01日 21:43 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5yUWE2d3BKYjh4ODVjTDBYSWJvelZxei1leFNZZ2tnUjJhcThoUTBLOXBVN0JvbGpFTW9lb3ZaY1VlbXlGSVRfX3JWUEsxU0EzUlpjektB?oc=5" target="_blank" rel="noopener">TCFDとは 賛同と開示の違いや日本の取り組み状況をわかりやすく解説 - 朝日新聞</a></h3>
+      <p class="summary">TCFDとは 賛同と開示の違いや日本の取り組み状況をわかりやすく解説&nbsp;&nbsp;朝日新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2023年10月25日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE5EbHpHZV9zc3VKWlYzTVd0YV9QMUliVEttN2dzM0xMd3VHRGthalJyRUNSRDVkX2otMFgyN3Q4aEJ3TTRXTjc3cQ?oc=5" target="_blank" rel="noopener">国分グループ、非上場でTCFDに基づく情報開示へ - オルタナ</a></h3>
+      <p class="summary">国分グループ、非上場でTCFDに基づく情報開示へ&nbsp;&nbsp;オルタナ</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年06月27日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE1xQ1VFalVoeEFVbXJLZVZvTWg3X0JJa285elZ3aWk2YmJWLWhzcHZrRDZlb1VuZ1VxenpKMlNycHRyS1QzWFp1TjhCTzJVakFMdkpDdXZ3dnZ0aFFlWlFLN0ptNFdiUmlNdlhuUHo4UXJFVGNHOVBZ?oc=5" target="_blank" rel="noopener">非上場でもTCFD開示 国分「取引への影響､数年後にも」 - 日本経済新聞</a></h3>
+      <p class="summary">非上場でもTCFD開示 国分「取引への影響､数年後にも」&nbsp;&nbsp;日本経済新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年04月17日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMilgFBVV95cUxPTzBDS21Ja1N0LWJhNVNrQ1JTdVRJZERFTldTMW1GUlNrQjAtdGZNMlI3X3QtU1M5dnpLQm8tc0ZocU5hd0poYjNUdU1zM0ZBU0JXUVVVaUExQmV0UTZwRGtmNDlFcnhIN0RhYURMSE9ySEF0UnBia21WNy1QMFd3ZTVWNnZXMG1nVHlkZm9QcF9iT3hmcVE?oc=5" target="_blank" rel="noopener">TCFD提言 | ESG情報開示枠組みの紹介 | JPX ESG Knowledge Hub | 日本取引所グループ - 日本取引所グループ</a></h3>
+      <p class="summary">TCFD提言 | ESG情報開示枠組みの紹介 | JPX ESG Knowledge Hub | 日本取引所グループ&nbsp;&nbsp;日本取引所グループ</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年05月16日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTFBtYW54QTk1YlU3QW5VcTBIc2FZWXBHM195QTVVejROd1JlQXFFenlYNUZjWTBONXJZYzhtd0VkeE1vWkQtajVVV2k2ZnEydWpCd3pYNGNlNkhxUjhSaHQtZmlkUEZGOGZxakcw?oc=5" target="_blank" rel="noopener">TCFD提言への取り組み｜ローソン公式サイト - LAWSON</a></h3>
+      <p class="summary">TCFD提言への取り組み｜ローソン公式サイト&nbsp;&nbsp;LAWSON</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2020年12月26日 07:17 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE4xS2l0QWt3dzFsVDNPNUE2NXBaakRkeE90V2t4cjc0d1hFREszN3FzY045SXgwV0dIZE5IRTl0eUJiMlJvbFdVaHFPcDVMVXhTZnRhMWtpTQ?oc=5" target="_blank" rel="noopener">TCFD提言に基づく情報開示 - 高知銀行</a></h3>
+      <p class="summary">TCFD提言に基づく情報開示&nbsp;&nbsp;高知銀行</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2023年06月06日 16:04 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiaEFVX3lxTFBPUzY0LTRBaFprVjB6X1Q0NGxTSDl0MzdHQVBYZk1rS1FoWFlMUV9XSERVUV9XSHNwcWxTRVN0TjkyMEhFNGQ0a1NvSm02b29QR05nWk5rRWJYYUhNMnpnZDhQZ2l4b2tT?oc=5" target="_blank" rel="noopener">TCFD提言への取組み｜環境・気候変動 - 伊予銀行</a></h3>
+      <p class="summary">TCFD提言への取組み｜環境・気候変動&nbsp;&nbsp;伊予銀行</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2021年12月04日 08:09 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9RSXZsYXdEU2ZUNXFCMnF1djJmaE41SVQ4N19JWU5sVVF0N0ozZU9uZjZCQnB5ZGRKRFZYZmNTR2JFU0JDTzIzT3ZNMXU4VGRaWVlRZHBkaEFRNVk?oc=5" target="_blank" rel="noopener">農水省、食品・農林水産業向けのTCFDガイダンス公表 - ESG Journal</a></h3>
+      <p class="summary">農水省、食品・農林水産業向けのTCFDガイダンス公表&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2022年06月08日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE43eFdhUEg5YVcwYWJLSXJYRklMQjJVd3Z4aFN5aUt3QzB1QkpidkxoLS1KUHRSOThWVUxaaHVSemIwUUFkbTBUWlVNNmljU3kza0RNTm93?oc=5" target="_blank" rel="noopener">GPIFが「優れたTCFD開示」44社を発表 三菱UFJフィナンシャル・グループなど高評価 - 朝日新聞</a></h3>
+      <p class="summary">GPIFが「優れたTCFD開示」44社を発表 三菱UFJフィナンシャル・グループなど高評価&nbsp;&nbsp;朝日新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年02月01日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE5UdEdyYkk5b1VzeERVU0lweGpDbC1MTUZiT2hCYS00WExybW9DVk9MM1Q4bE9VYjZjZWd2X3Z4WEZ3X2FWWnpVcmFqN0F5S3BRNDRMWG5INA?oc=5" target="_blank" rel="noopener">ISSB、SASB基準の包括的見直し案を公表 - ESG Journal</a></h3>
+      <p class="summary">国際サステナビリティ基準審議会（ISSB）は、産業別サステナビリティ開示の基盤であるSASB基準の包括的な見直し案を公表しました。本見直しは、基準の国際的な通用性を高め、ISSB基準との整合性を強化することを目的としています。企業には業界特有のESG開示への対応が求められる一方、投資家にとっては比較可能で実用的なサステナビリティ情報の入手につながる重要な動きとなります。</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月09日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE9JZG8wa0tqWGZoWFF3cWxnVzM1cGJpbEtCVWVxenFEWjlGaHRKRnhFRnNWb0UxNEhWR0ZRWTM4Y3RFZFNCRnVjTFpmWQ?oc=5" target="_blank" rel="noopener">TCFDフレームワークに基づく情報を開示 気候変動が事業に及ぼすリスク・機会の影響を評価 - 株式会社ユーグレナ</a></h3>
+      <p class="summary">TCFDフレームワークに基づく情報を開示 気候変動が事業に及ぼすリスク・機会の影響を評価&nbsp;&nbsp;株式会社ユーグレナ</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2022年03月18日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE1uUm9XVW1OQTV4T2V1RjlpS2FwRHVyNXNSaWozLVkxVVB5Zk9XQlJVakNNbTVPUVdKZkVGMVZIbmtPUkZrLU4waDhUMEFFRjNkOFZOdDVoX3ZlQVFmQUh0Zms3OExWODV4cWNCMjZOVklZVjk5QlF1MmR5VdIBgAFBVV95cUxNR3dHWFd6SWoyZXREQUt3b1VGbDBKX2NLNkd2VFVZNnpzenJUcjU4SGxRYmk3WEpBT1k0UXpqYU44SHMyMWg5WVJRSWdUSC0tY2lNNEV3TWhIWExqaWR0aTNKa2VvM2F6dklwblRfeERlaFU3UExkdUIwdHI1bmp5RQ?oc=5" target="_blank" rel="noopener">【戦略】SSBJで変わるサステナビリティDX ～データ・業務・保証からAXまで～ | Sustainable Japan | 世界のサステナビリティ・ESG投資・SDGs - Sustainable Japan</a></h3>
+      <p class="summary">【戦略】SSBJで変わるサステナビリティDX ～データ・業務・保証からAXまで～ | Sustainable Japan | 世界のサステナビリティ・ESG投資・SDGs&nbsp;&nbsp;Sustainable Japan</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2026年10月14日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiSEFVX3lxTE1URFc4N0dwT1JTemhlYXFhMTBtMUo3Z3JoVENSb1pnVmt6THI2cDJGaHhGNllDR24yYWMzV0FXZVpNYVlkOUIybA?oc=5" target="_blank" rel="noopener">ISSB小森理事「サステナ課題への対応が競争優位の源泉に」 - オルタナ</a></h3>
+      <p class="summary">ISSB小森理事「サステナ課題への対応が競争優位の源泉に」&nbsp;&nbsp;オルタナ</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月31日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5DM3JjRGJVN2JQNjhmamdKUUxXUVRCVUt3NlhYWEJZTHZpOU1rck16TXYyQ0gtcVd4eWMyQlpIRHRLSlo3LTdhb3oxUGo0b0l0cUk1MjFjTDFSU2JSU3Qtb25udzRXTVE?oc=5" target="_blank" rel="noopener">一目で分かる企業を動かす自然の規制・ルール、TNFD・ISSB・SBTN… - 日経ビジネス電子版</a></h3>
+      <p class="summary">一目で分かる企業を動かす自然の規制・ルール、TNFD・ISSB・SBTN…&nbsp;&nbsp;日経ビジネス電子版</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年07月19日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5DVzNwVk1OS1dZa040akhTMjQwMUx4akFlWlcwckkxQ3pMZHRPZnFfNk1CVzlZdTgtTUlGQkJOdVRWRkZ3ZjJfOG96a0tPTDBMQnREVE5ET0Z4RlczQVU0?oc=5" target="_blank" rel="noopener">TCFD､TNFDそしてTISFD､次々に登場するサステナビリティ開示フレームワークへの対応で｢世界最多｣を競う日本企業の課題 - 東洋経済オンライン</a></h3>
+      <p class="summary">TCFD､TNFDそしてTISFD､次々に登場するサステナビリティ開示フレームワークへの対応で｢世界最多｣を競う日本企業の課題&nbsp;&nbsp;東洋経済オンライン</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2026年09月14日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1NY3BlTnFXQS1lWHVtZVhPYnJPQTJzSS1JNzlrQjgwWnUxUEo0Tm51VWtkeEh1aXo4aTBkbVVtYWdDaW9VNmJiaGJZd3F6ZGRONTQ3WjZ3?oc=5" target="_blank" rel="noopener">TCFDとは何か？ 気候変動への注目の高まりや今後の展望について解説 金融・経済から見えるSDGsのトレンド【3】 - 朝日新聞</a></h3>
+      <p class="summary">TCFDとは何か？ 気候変動への注目の高まりや今後の展望について解説 金融・経済から見えるSDGsのトレンド【3】&nbsp;&nbsp;朝日新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2022年03月24日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE92d182UWc4YXlibHFGeXJFZzNIVWRuWTJ2UVJkX1htLXBULUtjd1d5Mzl5aUZqU3R3WUFHdks1QVExR2t4ckZGOThCbmFKaE5RQVcyY2hEeXhEY3hSVmk0?oc=5" target="_blank" rel="noopener">農林水産省、気候関連財務情報開示タスクフォース（TCFD）ガイダンスを発行 - ESG Journal</a></h3>
+      <p class="summary">農林水産省、気候関連財務情報開示タスクフォース（TCFD）ガイダンスを発行&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2021年07月02日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE51SjZtb1B5dExYTjVlZFdLTHBKVVd6alVBNHlRSzZzWDJQRDBIMGkwTU83aURKMzV5SDJNbXdmVGFESS1iWWZpeXdfbzcyOHo0eGdzWUgwNDdIMzh4aWh3V3ZSaENLbFRld21KVXJFOExQV3FwZUE?oc=5" target="_blank" rel="noopener">TNFD、最終草案を発表 - 日経BP</a></h3>
+      <p class="summary">TNFD、最終草案を発表&nbsp;&nbsp;日経BP</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2023年05月18日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxNbUgtcjRiOU9FU3hNTjJmZVY2ZGd4WWY3N2tBd0dlUnVjeVItbmpEakRnaFFfN3hTZVhrV0cwbkl6RUh3RmxJdVl0emJYckhDdjdaN3RObjNXWFYxc3BXNk81RURWQzNOR0d1ZGsxM2FEZ2NjWmo0Rk5iOHB2VVR3ekV1X1VyMVJvbzRWQUJCb0NuQzJJS25BbEhGMTdwdURHd2VCWjVIVQ?oc=5" target="_blank" rel="noopener">シンガポールにおけるサステナビリティ関連規制について - Deloitte</a></h3>
+      <p class="summary">シンガポールにおけるサステナビリティ関連規制について&nbsp;&nbsp;Deloitte</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年02月29日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiSkFVX3lxTE9ra0cybUE4aG1UVVlZdHZ0ZUlzd2ZDaUFGQW5nMkZJdUNKRnh2c3BnRTQ4cUdNNTFHOVJrSUNZQ2g5OUxzWmNNUHNR?oc=5" target="_blank" rel="noopener">日経産業新聞フォーラム 「新TCFDとサステナビリティ経営の未来」 （ウェブ配信3月9日（水）) - 日経イベント＆セミナー</a></h3>
+      <p class="summary">日経産業新聞フォーラム 「新TCFDとサステナビリティ経営の未来」 （ウェブ配信3月9日（水）)&nbsp;&nbsp;日経イベント＆セミナー</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2022年02月01日 16:02 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE93ZlZieWtqYlRlb0x6blQxTkI1Vm0tYmlfekcwZ3cwR1l4R3BGRHJtSlZ1MlBOcjZPRnRRLW1BbmtocXBTLXk3cnVoNEN0ckpJM1JtRW5SRjF5VzJkWkE3NExMRWVHaTUyZ1Y2d0twWmpqV1hxZUtzQktR?oc=5" target="_blank" rel="noopener">【国際】TCFD、2020年進捗レポート発表。金融セクターの情報開示促進でパブコメ募集も開始 - Sustainable Japan</a></h3>
+      <p class="summary">【国際】TCFD、2020年進捗レポート発表。金融セクターの情報開示促進でパブコメ募集も開始&nbsp;&nbsp;Sustainable Japan</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2020年10月30日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9LdGlRa2VuUDdmQ0dxQjBnUXNqWmlnR3FuaHBISlFHRjVPbFBZaXlScFQ0aGd2WWo5N1czbmc0cGlKaE83T2ZraWg2MnVQNHNpNkpPb0dEMmQ4QUlQR3JnWkQ1SzRTR2hZQlE?oc=5" target="_blank" rel="noopener">【フィード・ワン】TCFD提言に基づく情報を開示 - PR TIMES</a></h3>
+      <p class="summary">【フィード・ワン】TCFD提言に基づく情報を開示&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2024年08月16日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFBqMjNwcW9kVklsM2FKbnZaSVFqWGhuS1pSY3FzdXh0Qm8xUTdvUTE2X25pTmlNdERWVlNINXVUR3hIdTU2WURqakEtZjlNYkp2NUYzb1JWdnBrbHRJeE9uWDQwUXlzVXpYLXc?oc=5" target="_blank" rel="noopener">TCFD提言への賛同表明及び情報開示に関するお知らせ - PR TIMES</a></h3>
+      <p class="summary">TCFD提言への賛同表明及び情報開示に関するお知らせ&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2022年07月15日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFB0SV9adEtNV3dsY3RMMlFVU0hYUXJPQkZoZENVVEVwWV9QY1pkVUVlZ3Fyc0dlTVgxRFZpR1cySjNZeUZGX3FhNFhTVmtZTWtWaklzT1ZzY0U2V2FvbUFNcWpEbEU1RHJ3d1E?oc=5" target="_blank" rel="noopener">【環境経営・TCFD】ロイヤルホールディングス、6カ月でTCFDを開示 - PR TIMES</a></h3>
+      <p class="summary">【環境経営・TCFD】ロイヤルホールディングス、6カ月でTCFDを開示&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2023年09月13日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TCFD開示">
+      <div class="card-badges">
+        <span class="pill pill-tcfd">🌡️ TCFD開示</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE45d3k4NThPbHZMVXlQQWhhWS15MDVJeHpOTGQ3Q0VObjFDaVpDWUxRdG1lcWE0YU9tbTJsb2NiVDNLcUdueVFfMlFFQ0tqQmtIYlZ0LWF1RXBvV2FYUnhWcER1UE5OdzRaS09qNHItTDBkcENJX1hz?oc=5" target="_blank" rel="noopener">2030年及び2050年に向けた環境面での中長期目標 「ファミマecoビジョン2050」を策定！ ～TCFDへの賛同も表明（気候関連財務情報開示タスクフォース）～ - ファミリーマート</a></h3>
+      <p class="summary">2030年及び2050年に向けた環境面での中長期目標 「ファミマecoビジョン2050」を策定！ ～TCFDへの賛同も表明（気候関連財務情報開示タスクフォース）～&nbsp;&nbsp;ファミリーマート</p>
+      <div class="card-meta">
+        <span class="source">Google News - ISSB/TCFD/SSBJ</span>
+        <span class="sep">·</span>
+        <span class="time">2020年02月19日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTFBodWVrZV9XUlJxQy13SUxrMmR6TFVuSmFHUGdLVFpHUUxhd2NiWFFUUjFlV0Q4bXF5TXptTWNFU3FfMFBxRU1MWERXRkpiXzdhVWRFVE50SQ?oc=5" target="_blank" rel="noopener">GRI、食品・飲料向けセクター別スタンダード策定へ 気候・生物多様性など対象 - ESG Journal</a></h3>
+      <p class="summary">GRI、食品・飲料向けセクター別スタンダード策定へ 気候・生物多様性など対象&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年10月06日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE5lNzNhVWt5bmJuWE5aWUVYWHZEaExXUVluZzVXQTYtdVdTN0FheFZpek1vODFQZUcyQ1BtbGZLVU1rY3JOT0JTM3VZN210bC1VZTVTRnRyVlR1VHNyQUxpaEhVZk16Zw?oc=5" target="_blank" rel="noopener">生物多様性ビッグデータ解析のバイオーム、製造拠点などの環境リスクをデータ化する企業向けサービスを開始 - 日経バイオテクONLINE</a></h3>
+      <p class="summary">生物多様性ビッグデータ解析のバイオーム、製造拠点などの環境リスクをデータ化する企業向けサービスを開始&nbsp;&nbsp;日経バイオテクONLINE</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年07月21日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMib0FVX3lxTFB4OFZQaWxSV3Vhc1pSVWQwUVBXT09PYWFhZjI1M1NaOUk3YVZrTGJMb0ZCUVVhTUxEZ3Itbll5Q2o2Yzl5R3p6QW9mSnJuUGtSQ3NxTWoyNENya252Y0lTOTFENTBiTVpuNkJ1Y0w0cw?oc=5" target="_blank" rel="noopener">TNFD提言に基づく情報開示｜自然共生｜環境｜サステナビリティ - コクヨ</a></h3>
+      <p class="summary">TNFD提言に基づく情報開示｜自然共生｜環境｜サステナビリティ&nbsp;&nbsp;コクヨ</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年12月17日 17:14 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxQaThoZ0lwZ0FRVjQwcFh3RENwUXFmWXBCYlZ5SlpfUW9tb2ZiUWp4T012OHRRc2hsaGxWZ0NhVUsxS2RjbjZ0alVjb19EWGFqR3VSOG1hRkFaaEN6aXpoZHAxSTQyT2dhRTQ5RVNST25Xam1FMzFfeHlWUi0zdENTOFp1THQ0WjNSMzZTdU5YU3RMSi1vT3VyUGJ4el9EdW9RZnFJRTg4X1c2ZmY1M0dnbVU5YWNqN2ZObDBwdEZRV1NuM3gycGkxOFduTkZXQU01RjREbFQ1TQ?oc=5" target="_blank" rel="noopener">TNFD追加的セクターガイダンスポイント解説③：食料・農業セクター - EY</a></h3>
+      <p class="summary">TNFD追加的セクターガイダンスポイント解説③：食料・農業セクター&nbsp;&nbsp;EY</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2024年12月11日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE5hNnZFaVFGOGJoVFRWTE9OQ1VYQkVDVTZBRGVYU2ZfeWp3RU9ldGRYdlJheHpNZFF5SG1uSlB0YnpSaG91RWdKN1phbTM5Q1dwTU1CVUhSOUI2dw?oc=5" target="_blank" rel="noopener">TNFDを取り巻く最新動向2025 - ブライトイノベーション</a></h3>
+      <p class="summary">TNFDを取り巻く最新動向2025&nbsp;&nbsp;ブライトイノベーション</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年08月21日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTFB1OWp3a1E5Tzl0RlI4Vk55cFVPWWw3MWw4dThUUFpKT2tMc2ZpSER3Umd6bC1rTWJsaHpIbjRRVDBfaE5HSHJEeHBZWV84UTQxU3pqTmdkZk9tSS1FRWFzZllfXzV5b1FFTFZJ?oc=5" target="_blank" rel="noopener">自然資本や生物多様性に関するリスク管理・情報開示枠組みであるTNFD開示提言に賛同 - MITSUI & CO., LTD.</a></h3>
+      <p class="summary">自然資本や生物多様性に関するリスク管理・情報開示枠組みであるTNFD開示提言に賛同&nbsp;&nbsp;MITSUI & CO., LTD.</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年03月14日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE9YZ0kzc2R0Y1UxdXJOdFRSc2NmZVMtY0tMX0hKMW01SmUycmwyWW9tSE8zaDVBNDg1clUycXFqMTJ5R2I0TFJFcGF5Q2lYUQ?oc=5" target="_blank" rel="noopener">『2024年TNFD開示の潮流と日本企業の対応状況』を発表 ～日本企業65社の開示状況を調査した実践的な参考情報として - WWFジャパン</a></h3>
+      <p class="summary">『2024年TNFD開示の潮流と日本企業の対応状況』を発表 ～日本企業65社の開示状況を調査した実践的な参考情報として&nbsp;&nbsp;WWFジャパン</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年08月28日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxQcVNYTGZHc19xWnB1U2xYOTB0N0ZpVF9JNUx3NFc2cW5xZTJaWEEwY3RzMWhtZWRYaG0telFLUDZReEt5dENPS1JRWGlzNEF1dkFoWDJSdGo3ZWFJbF9VQi1iS05HeFVqTEFXQnNSTFdObE5peWhhN3VwNWpScGE2TGY2ODJ0alhOME5OYUhTLXp0Z0F2NS1ySA?oc=5" target="_blank" rel="noopener">シリーズ：生物多様性とネイチャーポジティブ 第5回：食品・飲料業界の自然関連リスクと機会 - PwC</a></h3>
+      <p class="summary">シリーズ：生物多様性とネイチャーポジティブ 第5回：食品・飲料業界の自然関連リスクと機会&nbsp;&nbsp;PwC</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2022年07月01日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE1laXB0SktyM3NZTThwSE9KZWFDOVktcEV0V1JpZk9OQ3FFYW1GeWdxMUUxMHFtaXQzQ3pEYlJzRHV4MFFwMVowVUV1d0h3NEU?oc=5" target="_blank" rel="noopener">企業に生物多様性への影響度開示が求められる未来。TNFDを支援するシンク・ネイチャーの勝機 - 三菱地所</a></h3>
+      <p class="summary">企業に生物多様性への影響度開示が求められる未来。TNFDを支援するシンク・ネイチャーの勝機&nbsp;&nbsp;三菱地所</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年03月03日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9RbDNVdUY1TzFNaVRnVEtHOUJNTTdrNEZka2lQdmZpRXRFd1NnTXl0ODE5djFpQnNBX1c0MGsyY2RHUlhURE1GSVI2WVhUS3ZaTFhTb2g2ZWNJdw?oc=5" target="_blank" rel="noopener">TNFDキーポイントを参考にしたベンチマーク調査結果 ―2024年までの開示企業 - WWFジャパン</a></h3>
+      <p class="summary">TNFDキーポイントを参考にしたベンチマーク調査結果 ―2024年までの開示企業&nbsp;&nbsp;WWFジャパン</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年08月20日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxQZW9qLVRhcGdWLTJ3Zmt0UXQyUGQ3TS1NUnY3YkY2Z2l6ZUExQ3A2NVQ2ZE5xRjVvMy1ib2V5Q3JDSFEyNWdJTVFlNGJQd0Z0RFFnQUl4SVhOdnEydnlOZkp5Nzg5S2FMWWJpSzdmeG83cEZfamRMc2RXNDZPY193NE5GZG1XVVpsV2J3alVadzNmdw?oc=5" target="_blank" rel="noopener">生物多様性｜環境｜サステナビリティ｜サントリービバレッジ＆フード - サントリーホールディングス</a></h3>
+      <p class="summary">生物多様性｜環境｜サステナビリティ｜サントリービバレッジ＆フード&nbsp;&nbsp;サントリーホールディングス</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2023年11月29日 18:21 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTFBCalluUE9FcHp5dGZEOHM0Z1doblhZV0lBYlRpYjJWQTBOZnQyWUlsOWJ4bFJ6VlJJUmxtVXM2RmJjZG1zY2QzbXo1SGhQZkMzbkE0T0tR?oc=5" target="_blank" rel="noopener">森ビル、「ヒルズ」の緑地で昆虫約180種が往来しうるネットワーク形成 TNFD開示 - 朝日新聞</a></h3>
+      <p class="summary">森ビル、「ヒルズ」の緑地で昆虫約180種が往来しうるネットワーク形成 TNFD開示&nbsp;&nbsp;朝日新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月29日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiYEFVX3lxTFB0SmJGa3VtNWRKaFFLeWo2end1bjlyRmFTNjZac1JRVmxiLUNwQ0NzRVBFdzJhLVR0RXdKd0h0YWNhQVY4YURpV0tWbDNDVEtkdmdCUUR5Y2dRV3AtVkRlSA?oc=5" target="_blank" rel="noopener">生物多様性スクール第2回 「生物多様性と食・農」開催報告 システム転換が必要！ - WWFジャパン</a></h3>
+      <p class="summary">生物多様性スクール第2回 「生物多様性と食・農」開催報告 システム転換が必要！&nbsp;&nbsp;WWFジャパン</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2022年04月05日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOZE10TXRJNXdKWDdQa25ERVoyNkRMalBJOGZSWk9VdVlEN0RmOVhsU1BOT2FCdmNrYXlsbnFFeU5yWVo0cTkxUFBtNENJZFZNUjFMUEhlMXllbzByODhDNVZoZlFlQWpTX3ZxMGJSS1piSTkySEZKQ3hGQ0VwZ3lBT09vYkt0bTd1VS14ODJB?oc=5" target="_blank" rel="noopener">生物多様性の保全｜サステナビリティ - ファミリーマート</a></h3>
+      <p class="summary">生物多様性の保全｜サステナビリティ&nbsp;&nbsp;ファミリーマート</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2024年10月03日 06:38 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTFByZVhBWW5pWTZyNzFzS1RHejFBbFRuTFhqaTJHYkF0Qm5jUGZHbXNXSjhiWlRzNU9hcGxSLXpJM3BYQjZwaUJpQW5IOFRyUGpIbnQ1N2xQZw?oc=5" target="_blank" rel="noopener">熊本宣言を採択 グローバル・ネイチャーポジティブ・サミット、企業・金融機関の参画拡大 - ESG Journal</a></h3>
+      <p class="summary">熊本宣言を採択 グローバル・ネイチャーポジティブ・サミット、企業・金融機関の参画拡大&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年07月28日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE5SalVGNmZzem00UlI3azZDakdWQ0dGT0VwODVERGtpWndKZmoyWmhQc3U3X0ozUDMxVl8tQjZKS3RNR0tPSU9WV1dqRGF1V1NDMFdKVVd5dw?oc=5" target="_blank" rel="noopener">SBTN、14社の自然関連目標・検証進捗を公表 大和ハウス工業など日本企業も参加 - ESG Journal</a></h3>
+      <p class="summary">SBTN、14社の自然関連目標・検証進捗を公表 大和ハウス工業など日本企業も参加&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年09月24日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE5WZFllQWFSWUI2WkY1UV9iTlJhUXlPbjQ3Y0pGQU03eDNIVHNBeVJwMk5vTlVJUlBUbGJUS2JVSmZlWUZLejFFNzZlTUhCWjFHR0ZrVWdn?oc=5" target="_blank" rel="noopener">地域銀、TNFD開示拡大 25会計年度に7先へ - ニッキンONLINE</a></h3>
+      <p class="summary">地域銀、TNFD開示拡大 25会計年度に7先へ&nbsp;&nbsp;ニッキンONLINE</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年04月12日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="サプライチェーン">
+      <div class="card-badges">
+        <span class="pill pill-supply">🔗 サプライチェーン</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE0wcVdnN0RLLUkwQlh3V2JmYTZmWnF5LXRuMHVtSXJQWXBqck1tb3hsZlhMOHMzcTcwRDZCUktOcURGTWpRaEh6VUl4czRnaHFHR2NRb0FTRjJGQQ?oc=5" target="_blank" rel="noopener">SBTi FLAG とは？基礎知識や最新ガイダンスの要件を解説 - ブライトイノベーション</a></h3>
+      <p class="summary">SBTi FLAG とは？基礎知識や最新ガイダンスの要件を解説&nbsp;&nbsp;ブライトイノベーション</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年04月24日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1NR3RaWUpSc0dBTi1fNjBQUnhzNjMwMW5lbXVNTWQ3d01hNkg4R1dSUjZVZkhTQWNWNzBpVE90MkhRZHVhaHZQamlBdzR3Y29vcFlKT2Ywcmh2dWs3TW9QYlM3XzFKalpvaHc?oc=5" target="_blank" rel="noopener">自然資本や生物多様性に関するリスク管理・情報開示枠組みであるTNFD開示提言に賛同 - PR TIMES</a></h3>
+      <p class="summary">自然資本や生物多様性に関するリスク管理・情報開示枠組みであるTNFD開示提言に賛同&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年03月14日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE9rOGdzRlZvMzJhRE84OFZJVXRxOE85V2NoMDdDRlZ2ZEhFdEUzeEhRS2FGQWlfSlhDWHJoeGRFMTNxdVl5dFItYXNpMFhuOGRxejlJUkxTbHlWM3hWam1aWmZpZ0FsVzctaG90eGdpeHhhX2JjM2E4?oc=5" target="_blank" rel="noopener">自然関連財務情報開示タスクフォース（TNFD）フォーラムに参画 ～生物多様性保全方針も改定～ - ファミリーマート</a></h3>
+      <p class="summary">自然関連財務情報開示タスクフォース（TNFD）フォーラムに参画 ～生物多様性保全方針も改定～&nbsp;&nbsp;ファミリーマート</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2023年07月05日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE5SNDZzeGw1U2lnWmFMVnM2YTNxXzVWRXRRQ19CNVVKSDVwLTVSQ1JjcU15R0NpR3FLeVZDTU5WaUtqMkwzLTF0VzhZYTVaOTU5X1Aza01ZaWRxVWY4eVRjS00zU0VRZWRfZktXcQ?oc=5" target="_blank" rel="noopener">衛星とGISで自然情報開示を支援、国際航業がTNFD対応サービスを開発（2ページ目） - 日経クロステック</a></h3>
+      <p class="summary">衛星とGISで自然情報開示を支援、国際航業がTNFD対応サービスを開発（2ページ目）&nbsp;&nbsp;日経クロステック</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2023年05月17日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTE1Yd2ZPZGRrdEx1VXJ1bklwX3ZKVzF4SEF5cjJMLXduTEJzNjJWbUtYTEF6ZnZwNEluc0EyYi1McHRjNkprQ092cjQ5VnZKZ2t3S1lzcQ?oc=5" target="_blank" rel="noopener">「TNFD対応ボード」を無料試用できる、自然資本可視化ツール「BiomeBoard」β版を提供開始 - ニコニコニュース</a></h3>
+      <p class="summary">「TNFD対応ボード」を無料試用できる、自然資本可視化ツール「BiomeBoard」β版を提供開始&nbsp;&nbsp;ニコニコニュース</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2026年10月22日 02:30 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTFA1MGlqQnZqNkZKRzBJRDFDM2doT2FXZXljdzBpMElKTV9EQi1laUE2TXVBeFduSWxZNUlDSmI3aGVNNEJFTXVEVF9BTTFILWVra3hDeWVB?oc=5" target="_blank" rel="noopener">ＴＮＦＤ※１フレームワークに基づく自然関連情報の試行開示を開始 - フーズチャネル</a></h3>
+      <p class="summary">ＴＮＦＤ※１フレームワークに基づく自然関連情報の試行開示を開始&nbsp;&nbsp;フーズチャネル</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2023年09月29日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE96eDhvQVUxRTAxd0pLa2FmSm43eXA5R2xaN2dEZkNacTBmdThGZGVUYVZlTHN6SFFlZ0FGUlAzX21TMlBaT0ZiRUdGY2FxaV92REI2djhPVTNWVVhGMEJtelUzN2IxbkdaVXc?oc=5" target="_blank" rel="noopener">大手コンビニ初！TNFDの開示提言に基づく情報開示 エチオピアでのコーヒー豆の栽培について ～生物多様性の保全・ネイチャーポジティブに向けて～ - PR TIMES</a></h3>
+      <p class="summary">大手コンビニエンスストアが、生物多様性の保全やネイチャーポジティブの実現に向け、エチオピアでのコーヒー豆栽培に関する情報をTNFD（自然関連財務情報開示タスクフォース）の提言に基づき業界で初めて開示した。サプライチェーン上流における自然資本への影響や依存度を可視化し、持続可能な調達と環境リスク低減を進める姿勢を投資家等に示すものである。</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2024年09月04日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFBCOFdQSTVtRDkyLVM2RTVsWFBVZUpYa2NrNWI0cUxlTnV4MVBpbS1DU1lVOFVkeWFDTlZQNkVGYWZpcHEyTUt0Tld2eGZxemxRRmdEQnJ1WUNfcnBJakE4eVJIdzFVbWVxZkE?oc=5" target="_blank" rel="noopener">環境移送ベンチャー イノカ、リバネスと共同でTNFD開示対応を支援する分子生物学的評価サービス「BETA」を国内初、事業化。 - PR TIMES</a></h3>
+      <p class="summary">環境移送ベンチャー イノカ、リバネスと共同でTNFD開示対応を支援する分子生物学的評価サービス「BETA」を国内初、事業化。&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月09日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="TNFD/生物多様性">
+      <div class="card-badges">
+        <span class="pill pill-tnfd">🌿 TNFD/生物多様性</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE1YM2lreDljODU1bkhXTnBvTlFXbEU4Zlh3Z0h2V0Zqd3l6bWJmOVBSU3hrM2dCRmFWZ2k1U0xabklYblZwemJzVlVnaG81cmhBU3o0TTNwY0JUSE1wakRURDM3R0E2N3IybkE?oc=5" target="_blank" rel="noopener">「自然関連財務情報開示タスクフォース（TNFD）フォーラム」に参画 - PR TIMES</a></h3>
+      <p class="summary">「自然関連財務情報開示タスクフォース（TNFD）フォーラム」に参画&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - TNFD/生物多様性</span>
+        <span class="sep">·</span>
+        <span class="time">2022年04月14日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="ISSB対応">
+      <div class="card-badges">
+        <span class="pill pill-issb">📋 ISSB対応</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE15WlFNMWNyZThwcEhQSlhHbTNtSXBZMUVGRkxXNDVjVVBxeFRHdW1sTTRhbVB1TXFUVzBCOUY1NG5ueEJhWGRSZlhTRy0teURPUjNDLWRSX3ZRWVpqdkxv?oc=5" target="_blank" rel="noopener">SSBJ基準対応にGHG排出量算定や報告プロセス整備も必要､2027年から大きく変わるサステナビリティ法定開示の実務対応① - 東洋経済オンライン</a></h3>
+      <p class="summary">SSBJ基準対応にGHG排出量算定や報告プロセス整備も必要､2027年から大きく変わるサステナビリティ法定開示の実務対応①&nbsp;&nbsp;東洋経済オンライン</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2026年09月28日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMibEFVX3lxTE9CV2hkeldrUkp3STZyRENGY29BTGVNbDVpZWp0YnN5SjRwQjZUUmc0eTF5ZHpRWXhzdlREMEtIRmZHeWhQXzZibzlFcWtWMWlWUGVDVHpNRmhfemMyTndpcDZQME13YWotUDRGVw?oc=5" target="_blank" rel="noopener">プライム企業のサステナビリティー開示義務、時価総額5000億円未満は「先送り」 - 日本経済新聞</a></h3>
+      <p class="summary">プライム企業のサステナビリティー開示義務、時価総額5000億円未満は「先送り」&nbsp;&nbsp;日本経済新聞</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年07月17日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="規制・義務化">
+      <div class="card-badges">
+        <span class="pill pill-regulation">⚖️ 規制・義務化</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE02WWdPYlNPMTIzaTZDWlFuTW50MUlLRWVDUElJTWlKMHgzUFVpY0x2V3hqOWFHUHJ0RlRqTWR1OVdKaWhOaGtYdzltM0F1TXVPbm9KOHZTM2c3V1Qwb0pv?oc=5" target="_blank" rel="noopener">規制の“先”を見据える効果的なサステナビリティ情報開示 - 日経BPイベント＆セミナー</a></h3>
+      <p class="summary">規制の“先”を見据える効果的なサステナビリティ情報開示&nbsp;&nbsp;日経BPイベント＆セミナー</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年01月22日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="サプライチェーン">
+      <div class="card-badges">
+        <span class="pill pill-supply">🔗 サプライチェーン</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFBMdU5YS25RSV9lZ2NtT1owRzhBQzJGWi1yNzNNZE5tV0dWTm84MmtNc3ZuUDE2b0JKQjFmOHpPdEZ3UzdZbU81b25nMnlGb0JVYms3cjVZRXZPS2c?oc=5" target="_blank" rel="noopener">RANのランキング、食品・消費財大手10社のサプライチェーンにおける森林破壊と人権の評価 - ESG Journal</a></h3>
+      <p class="summary">RANのランキング、食品・消費財大手10社のサプライチェーンにおける森林破壊と人権の評価&nbsp;&nbsp;ESG Journal</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2023年12月06日 17:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="サプライチェーン">
+      <div class="card-badges">
+        <span class="pill pill-supply">🔗 サプライチェーン</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiSkFVX3lxTFBRT1hRbHoxd1FwZnNZanZ1S1pTdWhOeGlqTUlfQzR3UGxTd0RWemtpeVl3U0hOb0M0OVhVbmRCN3hITkFyY0k1SU5R?oc=5" target="_blank" rel="noopener">スコープ3削減の壁を超えるには、農業分野の温室効果ガス削減がカギに/クニエ･今真理子氏に聞く - 食品産業新聞社ニュースWEB</a></h3>
+      <p class="summary">スコープ3削減の壁を超えるには、農業分野の温室効果ガス削減がカギに/クニエ･今真理子氏に聞く&nbsp;&nbsp;食品産業新聞社ニュースWEB</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年04月11日 16:00 JST</span>
+      </div>
+    </div>
+    <div class="article-card" data-category="サプライチェーン">
+      <div class="card-badges">
+        <span class="pill pill-supply">🔗 サプライチェーン</span>
+      </div>
+      <h3><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE0tM1FOb1gwUnNXQ3lHcU5JMjc5RE92N2hHQkxuYUlLcWxPU0xDTUJOQjJFX3AxVFVnQ3JPM2d3LTBwSVVKcXhIRTAteGlMQy01VjVWNXZzN2FxZXJ1WFNCQVZ6aWZkLXkxMHc?oc=5" target="_blank" rel="noopener">【事例公開】食品メーカーの月島食品工業、「e-dash」を活用しScope 3対応を本格化 - PR TIMES</a></h3>
+      <p class="summary">【事例公開】食品メーカーの月島食品工業、「e-dash」を活用しScope 3対応を本格化&nbsp;&nbsp;PR TIMES</p>
+      <div class="card-meta">
+        <span class="source">Google News - ESG規制/義務化</span>
+        <span class="sep">·</span>
+        <span class="time">2025年05月14日 16:00 JST</span>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <footer>
+    <span>データソース: Google News - ISSB/TCFD/SSBJ, Google News - ESG規制/義務化, Google News - TNFD/生物多様性, サステナブルジャパン</span>
+    <span>最終更新: 2026年10月26日 14:14 JST</span>
+  </footer>
+
+</div>
+
+<script>
+  const CATEGORY_MAP = {
+    "ISSB対応":        "issb",
+    "TCFD開示":        "tcfd",
+    "規制・義務化":    "regulation",
+    "TNFD/生物多様性": "tnfd",
+    "サプライチェーン": "supply"
+  };
+
+  function filterCategory(cat, btn) {
+    // ピルのアクティブ状態を更新
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const featured = document.getElementById('featured-section');
+    const gridLabel = document.getElementById('grid-label');
+    const cards = document.querySelectorAll('.article-card');
+
+    if (cat === 'all') {
+      if (featured) featured.removeAttribute('data-hidden');
+      gridLabel.textContent = 'その他のニュース';
+      cards.forEach(c => c.removeAttribute('data-hidden'));
+    } else {
+      // フィーチャード記事：カテゴリが一致しない場合は非表示
+      if (featured) {
+        const featuredCat = featured.getAttribute('data-category');
+        featured.setAttribute('data-hidden', featuredCat === cat ? 'false' : 'true');
+      }
+      gridLabel.textContent = cat;
+      cards.forEach(c => {
+        const cardCat = c.getAttribute('data-category');
+        c.setAttribute('data-hidden', cardCat === cat ? 'false' : 'true');
+      });
+    }
+  }
+</script>
+</body>
+</html>
